@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  
+  <title>JUC2 | Hexo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="CompletableFutureFuture  Future接口可以为主线程开一个分支任务，专门为主线程处理耗时和费力的复杂业务  线程：thread  异步：future 返回：callable Future优点：future+线程池异步多线程任务配合，能显著提高程序运行效率 案例： 1234567891011121314151617181920212223242526272829303132">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JUC2">
+<meta property="og:url" content="http://example.com/2022/09/29/JUC2/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="CompletableFutureFuture  Future接口可以为主线程开一个分支任务，专门为主线程处理耗时和费力的复杂业务  线程：thread  异步：future 返回：callable Future优点：future+线程池异步多线程任务配合，能显著提高程序运行效率 案例： 1234567891011121314151617181920212223242526272829303132">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/img/contentImg/image-20220929132813178.png">
+<meta property="og:image" content="http://example.com/img/contentImg/image-20220929133147058.png">
+<meta property="og:image" content="http://example.com/img/contentImg/image-20220929143126514.png">
+<meta property="og:image" content="http://example.com/img/contentImg/image-20220929143243858.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929152826606.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929153417990.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929184231351.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929184633195.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929183956326.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929195508136.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929195530791.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929212347798.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220929212749814.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220930091702226.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220930095200987.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20220930213440785.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001103454212.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001103659939.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001105509044.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001105540156.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001105936537.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001105949330.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001110830947.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001111231887.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001111316374.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001112216614.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001151951557.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001152256934.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001153102196.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001153314578.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221001153632722.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003091629480.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003092141835.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003092228479.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003092507429.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003092934859.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003092951212.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003093145006.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221003100027837.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004101813228.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004101926766.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004102246830.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004102435493.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004102830348.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004103219155.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004103712565.png">
+<meta property="og:image" content="d:\WORK\Blog\source\img\contentImg\image-20221004103730511.png">
+<meta property="article:published_time" content="2022-09-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-09T04:43:51.321Z">
+<meta property="article:author" content="John Doe">
+<meta property="article:tag" content="Java">
+<meta property="article:tag" content="高并发">
+<meta property="article:tag" content="JUC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/img/contentImg/image-20220929132813178.png">
+  
+    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+  
+  
+    <link rel="shortcut icon" href="/favicon.png">
+  
+  
+    
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/typeface-source-code-pro@0.0.71/index.min.css">
+
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  
+    
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
+
+  
+<meta name="generator" content="Hexo 6.3.0"></head>
+
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">Hexo</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">Home</a>
+        
+          <a class="main-nav-link" href="/archives">Archives</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
+      </div>
+    </div>
+  </div>
+</header>
+
+      <div class="outer">
+        <section id="main"><article id="post-JUC2" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
+  <div class="article-meta">
+    <a href="/2022/09/29/JUC2/" class="article-date">
+  <time class="dt-published" datetime="2022-09-28T16:00:00.000Z" itemprop="datePublished">2022-09-29</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Java/">Java</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="p-name article-title" itemprop="headline name">
+      JUC2
+    </h1>
+  
+
+      </header>
+    
+    <div class="e-content article-entry" itemprop="articleBody">
+      
+        <h2 id="CompletableFuture"><a href="#CompletableFuture" class="headerlink" title="CompletableFuture"></a>CompletableFuture</h2><h3 id="Future"><a href="#Future" class="headerlink" title="Future"></a>Future</h3><p> <img src="/../img/contentImg/image-20220929132813178.png" alt="image-20220929132813178"></p>
+<p>Future接口可以为主线程开一个分支任务，专门为主线程处理耗时和费力的复杂业务</p>
+<p><img src="/../img/contentImg/image-20220929133147058.png" alt="image-20220929133147058"></p>
+<p>线程：thread  异步：future 返回：callable</p>
+<p>Future优点：future+线程池异步多线程任务配合，能显著提高程序运行效率</p>
+<p>案例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> CompletableFuture;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FutureTaskDemo</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">        FutureTask&lt;String&gt; task1 = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(<span class="keyword">new</span> <span class="title class_">Callable</span>&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> String <span class="title function_">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                TimeUnit.MILLISECONDS.sleep(<span class="number">200</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&quot;task1&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        FutureTask&lt;String&gt; task2 = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(<span class="keyword">new</span> <span class="title class_">Callable</span>&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> String <span class="title function_">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                TimeUnit.MILLISECONDS.sleep(<span class="number">300</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&quot;task2&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        FutureTask&lt;String&gt; task3 = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(<span class="keyword">new</span> <span class="title class_">Callable</span>&lt;String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="keyword">public</span> String <span class="title function_">call</span><span class="params">()</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">                TimeUnit.MILLISECONDS.sleep(<span class="number">500</span>);</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&quot;task3&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="type">ExecutorService</span> <span class="variable">threadPool</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">        threadPool.execute(task1);</span><br><span class="line">        threadPool.execute(task2);</span><br><span class="line">        threadPool.execute(task3);</span><br><span class="line">        <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.nanoTime();</span><br><span class="line">        System.out.println(<span class="string">&quot;程序运行时间：&quot;</span> + (end - start) + <span class="string">&quot;纳秒&quot;</span>);</span><br><span class="line">        threadPool.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>Future缺点：</p>
+<ul>
+<li><p>get()方法会阻塞线程，直到结果返回，一般建议放在程序后面</p>
+</li>
+<li><p>isDone轮询的方式会消耗CPU资源，且也不一定能及时的得到计算结果，如果想要异步获取结果，通常会以轮询的方式去获取结果，尽量不直接使用get阻塞</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> CompletableFuture;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.ExecutionException;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.FutureTask;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">FutureTaskDemo2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> ExecutionException, InterruptedException &#123;</span><br><span class="line">        FutureTask&lt;String&gt; task = <span class="keyword">new</span> <span class="title class_">FutureTask</span>&lt;&gt;(() -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;task come in ， waiting complete&quot;</span>);</span><br><span class="line">            TimeUnit.SECONDS.sleep(<span class="number">5</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;take over&quot;</span>;</span><br><span class="line">        &#125;);</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Thread</span>(task).start();</span><br><span class="line">        System.out.println(<span class="string">&quot;main线程 ，忙其他任务&quot;</span>);</span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)&#123;</span><br><span class="line">            <span class="keyword">if</span> (task.isDone())&#123;</span><br><span class="line">                System.out.println(task.get());</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                TimeUnit.MILLISECONDS.sleep(<span class="number">500</span>);</span><br><span class="line">                System.out.println(<span class="string">&quot;目前任务还未完成&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<p>Future对于结果的获取不是很友好，只能通过阻塞或轮询的方式得到任务的结果。</p>
+<p>Future无法完成复杂业务，回调通知（任务完成的时候告诉我）</p>
+<h3 id="CompletableFuture-1"><a href="#CompletableFuture-1" class="headerlink" title="CompletableFuture"></a>CompletableFuture</h3><p>CompletableFuture提供了一种观察者模式类似的机制，可以让任务执行完成后通知监听的一方。</p>
+<p><img src="/../img/contentImg/image-20220929143126514.png" alt="image-20220929143126514"></p>
+<p><img src="/../img/contentImg/image-20220929143243858.png" alt="image-20220929143243858"></p>
+<blockquote>
+<p> 创建CompletableFuture异步任务方式</p>
+</blockquote>
+<ol>
+<li>无返回值<ul>
+<li>自定义线程池：runAsync(Runnable task, Executor executor)</li>
+<li>接口提供的ForkJoinPool线程池：runAsync(Runnable task, Executor executor)</li>
+</ul>
+</li>
+<li>有返回值<ul>
+<li>子定义线程池：supplyAsync(Runnable task, Executor executor)</li>
+<li>接口提供的ForkJoinPool线程池：supplyAsync(Runnable task, Executor executor)</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p>增强的地方</p>
+</blockquote>
+<ol>
+<li>对比Future，它减少阻塞和轮询</li>
+<li>可以传入回调对象，当异步任务完成或者发生异常时，自动调用回调对象的方法</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> CompletableFuture;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.*;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">CompletableDemo2</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">ExecutorService</span> <span class="variable">threadPool</span> <span class="operator">=</span> Executors.newFixedThreadPool(<span class="number">3</span>);</span><br><span class="line">        CompletableFuture&lt;Integer&gt; task = CompletableFuture.supplyAsync(() -&gt; &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> ThreadLocalRandom.current().nextInt(<span class="number">10</span>);</span><br><span class="line">            System.out.println(<span class="string">&quot;生成随机数：&quot;</span> + result);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">                <span class="keyword">if</span> (result &gt;= <span class="number">5</span>)&#123;</span><br><span class="line">                    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> result/<span class="number">0</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> result;</span><br><span class="line">        &#125;, threadPool).whenComplete((v,e) -&gt; &#123;</span><br><span class="line">            <span class="keyword">if</span> (e == <span class="literal">null</span>)&#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;任务完成，得到的结果为：&quot;</span> + v);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).exceptionally(e -&gt; &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;出现异常：&quot;</span> + e.getCause() + <span class="string">&quot; ---&gt; &quot;</span> + e.getMessage());</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">        &#125;);</span><br><span class="line">        System.out.println(<span class="string">&quot;main线程处理其他任务&quot;</span>);</span><br><span class="line">        threadPool.shutdown();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>函数式接口</p>
+</blockquote>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220929152826606.png" alt="image-20220929152826606"></p>
+<blockquote>
+<p>get和join方法区别</p>
+</blockquote>
+<p>都是得到返回值，get方法会抛出异常，join方法不抛异常。编译时是否抛出检查型异常</p>
+<blockquote>
+<p>案例</p>
+</blockquote>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220929153417990.png" alt="image-20220929153417990"></p>
+<p>方式一：step by step</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> CompletableFuture;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.*;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.CompletableFuture;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"><span class="keyword">import</span> java.util.stream.Collectors;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 从各大电商平台搜索一本书的价格</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Demo1</span> &#123;</span><br><span class="line">    <span class="keyword">static</span> List&lt;NetMall&gt; malls = Arrays.asList(</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">NetMall</span>(<span class="string">&quot;京东&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">NetMall</span>(<span class="string">&quot;淘宝&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">NetMall</span>(<span class="string">&quot;当当&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">NetMall</span>(<span class="string">&quot;百度&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">NetMall</span>(<span class="string">&quot;臭鱼&quot;</span>),</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">NetMall</span>(<span class="string">&quot;找靓书&quot;</span>)</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">start</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">        List&lt;String&gt; mysql = getPrice(malls, <span class="string">&quot;mysql&quot;</span>);</span><br><span class="line">        mysql.forEach(System.out::println);</span><br><span class="line">        <span class="type">long</span> <span class="variable">end</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">        System.out.println(end - start);</span><br><span class="line"></span><br><span class="line">        <span class="type">long</span> <span class="variable">start2</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">        List&lt;String&gt; mysql2 = getPriceByCompletable(malls, <span class="string">&quot;mysql&quot;</span>);</span><br><span class="line">        mysql2.forEach(System.out::println);</span><br><span class="line">        <span class="type">long</span> <span class="variable">end2</span> <span class="operator">=</span> System.currentTimeMillis();</span><br><span class="line">        System.out.println(end2 - start2);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 并发查询</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> malls</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bookName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> List&lt;String&gt; <span class="title function_">getPriceByCompletable</span><span class="params">(List&lt;NetMall&gt; malls, String bookName)</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> malls</span><br><span class="line">                .stream()</span><br><span class="line">                .map(mall -&gt; CompletableFuture.supplyAsync(() -&gt; String.format(bookName + <span class="string">&quot;在 %s 的价格是 %.2f&quot;</span>, mall.getName(), mall.getPrice())))</span><br><span class="line">                .collect(Collectors.toList())</span><br><span class="line">                .stream()</span><br><span class="line">                .map((task) -&gt; task.join()).collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * step by step 依次按序查询</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> malls</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bookName</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">static</span> List&lt;String&gt; <span class="title function_">getPrice</span><span class="params">(List&lt;NetMall&gt; malls, String bookName)</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> malls</span><br><span class="line">                .stream()</span><br><span class="line">                .map(mall -&gt; String.format(bookName + <span class="string">&quot;在 %s 的价格是 %.2f&quot;</span>, mall.getName(), mall.getPrice()))</span><br><span class="line">                .collect(Collectors.toList());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">NetMall</span> &#123;</span><br><span class="line">    <span class="type">Random</span> <span class="variable">random</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Random</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">NetMall</span><span class="params">(String name)</span> &#123;</span><br><span class="line">        <span class="built_in">this</span>.name = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name; <span class="comment">// 电商平台名称</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">double</span> price; <span class="comment">// 书的价格</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> String <span class="title function_">getName</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="type">double</span> <span class="title function_">getPrice</span><span class="params">()</span> &#123;</span><br><span class="line">        price = random.nextDouble() + name.charAt(<span class="number">0</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            TimeUnit.SECONDS.sleep(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> price;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">mysql在 京东 的价格是 20140.54</span><br><span class="line">mysql在 淘宝 的价格是 28120.36</span><br><span class="line">mysql在 当当 的价格是 24403.20</span><br><span class="line">mysql在 百度 的价格是 30334.05</span><br><span class="line">mysql在 臭鱼 的价格是 33261.07</span><br><span class="line">mysql在 找靓书 的价格是 25214.78</span><br><span class="line">6135</span><br><span class="line">mysql在 京东 的价格是 20140.90</span><br><span class="line">mysql在 淘宝 的价格是 28120.60</span><br><span class="line">mysql在 当当 的价格是 24403.86</span><br><span class="line">mysql在 百度 的价格是 30334.29</span><br><span class="line">mysql在 臭鱼 的价格是 33261.02</span><br><span class="line">mysql在 找靓书 的价格是 25214.02</span><br><span class="line">1023</span><br></pre></td></tr></table></figure>
+
+<p>当电商平台越多时，差距越明显</p>
+<blockquote>
+<p>CompletableFuture常用方法</p>
+</blockquote>
+<ol>
+<li><p>获得结果和触发计算</p>
+<ul>
+<li><p>获取结果</p>
+<ul>
+<li>public T get()</li>
+<li>public T get(long timeout, TimeUnit unit)</li>
+<li>public T join()</li>
+<li>public getNoew(T valueIfAbsent)</li>
+</ul>
+</li>
+<li><p>主动触发计算</p>
+<ul>
+<li><p>public boolean complete(T value) 是否打断get方法立即返回value值</p>
+<p>当成功打断时，join或get返回value，没有打断时，正常返回结果</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>对计算结果进行处理</p>
+<ul>
+<li>thenApply：计算结果存在依赖关系，这两个线程串行化，由于存在依赖关系，当前步骤有异常的花就叫停</li>
+<li>handle：计算结果存在依赖关系，这两个线程串行化，，当前步骤有异常的继续下一步</li>
+</ul>
+</li>
+<li><p>对计算结果进行消费</p>
+<ul>
+<li>接收任务的处理结果，并消费结果，没有返回值</li>
+</ul>
+</li>
+<li><p>对计算速度进行选用</p>
+<ul>
+<li>applyToEither</li>
+<li><img src="D:\WORK\Blog\source\img\contentImg\image-20220929184231351.png" alt="image-20220929184231351"></li>
+</ul>
+</li>
+<li><p>对计算结果进行合并</p>
+<ul>
+<li>thenCombine：两个和CompletionStage任务都完成后，最终能把两个任务结果一起交给thenCombine来处理，先完成的等待其他分支任务</li>
+<li><img src="D:\WORK\Blog\source\img\contentImg\image-20220929184633195.png" alt="image-20220929184633195"></li>
+</ul>
+</li>
+</ol>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220929183956326.png" alt="image-20220929183956326"></p>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="Synchronized介绍"><a href="#Synchronized介绍" class="headerlink" title="Synchronized介绍"></a>Synchronized介绍</h3><p>synchronized同步代码块：javap -c 反编译后是通过monitorcenterEnter和monitorCenterExit</p>
+<p>synchronized普通同步方法：调用指令将会检查方法的ACC_SYNCHRONIZED访问标志是否被设置。如果设置了，执行线程会先持有monitor锁，然后再执行方法，最后方法完成后释放monitor（无论是正常完成还是非正常完成）</p>
+<p>synchronized静态同步方法：ACC_STATIC，ACC_SYNCHRONIZED访问标志区分该方法是否是静态同步方法</p>
+<blockquote>
+<p>为什么任何一个对象都可以成为锁</p>
+</blockquote>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220929195508136.png" alt="image-20220929195508136"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220929195530791.png" alt="image-20220929195530791"></p>
+<p>每个对象都带着一个对象监视器，每一个被锁住的对象都会和Monitor关联起来</p>
+<h2 id="中断机制"><a href="#中断机制" class="headerlink" title="中断机制"></a>中断机制</h2><p><img src="D:\WORK\Blog\source\img\contentImg\image-20220929212347798.png" alt="image-20220929212347798"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220929212749814.png" alt="image-20220929212749814"></p>
+<p>如何停止中断运行中的线程？</p>
+<ol>
+<li><p>通过标志位</p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220930091702226.png" alt="image-20220930091702226"></p>
+</li>
+<li><p>interrupt</p>
+</li>
+</ol>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220930095200987.png" alt="image-20220930095200987"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20220930213440785.png" alt="image-20220930213440785"></p>
+<p>中断不活动的线程没有影响</p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001103454212.png" alt="image-20221001103454212"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001103659939.png" alt="image-20221001103659939"></p>
+<h2 id="LockSupport"><a href="#LockSupport" class="headerlink" title="LockSupport"></a>LockSupport</h2><p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001105509044.png" alt="image-20221001105509044"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001105540156.png" alt="image-20221001105540156"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001105936537.png" alt="image-20221001105936537"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001105949330.png" alt="image-20221001105949330"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001110830947.png" alt="image-20221001110830947"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001111231887.png" alt="image-20221001111231887"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001111316374.png" alt="image-20221001111316374"></p>
+<h2 id="JMM"><a href="#JMM" class="headerlink" title="JMM"></a>JMM</h2><p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001112216614.png" alt="image-20221001112216614"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001151951557.png" alt="image-20221001151951557"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001152256934.png" alt="image-20221001152256934"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001153102196.png" alt="image-20221001153102196"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001153314578.png" alt="image-20221001153314578"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221001153632722.png" alt="image-20221001153632722"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003091629480.png" alt="image-20221003091629480"></p>
+<h3 id="happens-before"><a href="#happens-before" class="headerlink" title="happens-before"></a>happens-before</h3><p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003092141835.png" alt="image-20221003092141835"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003092228479.png" alt="image-20221003092228479"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003092507429.png" alt="image-20221003092507429"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003092934859.png" alt="image-20221003092934859"></p>
+<p>传递</p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003092951212.png" alt="image-20221003092951212"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003093145006.png" alt="image-20221003093145006"></p>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>可见、有序</p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221003100027837.png" alt="image-20221003100027837"></p>
+<h3 id="内存屏障"><a href="#内存屏障" class="headerlink" title="内存屏障"></a>内存屏障</h3><p>  <img src="D:\WORK\Blog\source\img\contentImg\image-20221004101813228.png" alt="image-20221004101813228"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221004101926766.png" alt="image-20221004101926766"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221004102246830.png" alt="image-20221004102246830"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221004102435493.png" alt="image-20221004102435493"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221004102830348.png" alt="image-20221004102830348"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221004103219155.png" alt="image-20221004103219155"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221004103712565.png" alt="image-20221004103712565"></p>
+<p><img src="D:\WORK\Blog\source\img\contentImg\image-20221004103730511.png" alt="image-20221004103730511"></p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://example.com/2022/09/29/JUC2/" data-id="claagnrrf00010gn9gnqo6la5" data-title="JUC2" class="article-share-link">Share</a>
+      
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JUC/" rel="tag">JUC</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2022/10/27/MySQL/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          MySQL
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2022/09/22/JUC/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JUC</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Categories</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/">数据库</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list" itemprop="keywords"><li class="tag-list-item"><a class="tag-list-link" href="/tags/JUC/" rel="tag">JUC</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/JVM/" rel="tag">JVM</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Java/" rel="tag">Java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/MySQL/" rel="tag">MySQL</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" rel="tag">高并发</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/JUC/" style="font-size: 15px;">JUC</a> <a href="/tags/JVM/" style="font-size: 10px;">JVM</a> <a href="/tags/Java/" style="font-size: 20px;">Java</a> <a href="/tags/MySQL/" style="font-size: 10px;">MySQL</a> <a href="/tags/%E9%AB%98%E5%B9%B6%E5%8F%91/" style="font-size: 15px;">高并发</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Archives</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/10/">October 2022</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2022/09/">September 2022</a></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">Recent Posts</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2022/10/27/MySQL/">MySQL</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/29/JUC2/">JUC2</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/22/JUC/">JUC</a>
+          </li>
+        
+          <li>
+            <a href="/2022/09/11/JVM/">JVM</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      
+      &copy; 2022 John Doe<br>
+      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">Home</a>
+  
+    <a href="/archives" class="mobile-nav-link">Archives</a>
+  
+</nav>
+    
+
+
+<script src="/js/jquery-3.4.1.min.js"></script>
+
+
+
+  
+<script src="/fancybox/jquery.fancybox.min.js"></script>
+
+
+
+
+<script src="/js/script.js"></script>
+
+
+
+
+
+  </div>
+</body>
+</html>
