@@ -1,0 +1,221 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>数据结构-B树 | 山茶花</title><meta name="author" content="Ding YG"><meta name="copyright" content="Ding YG"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="这篇文章主要介绍B树的特性以及插入删除操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="数据结构-B树">
+<meta property="og:url" content="https://redamancyyou.cn/2022/11/14/B%E6%A0%91/index.html">
+<meta property="og:site_name" content="山茶花">
+<meta property="og:description" content="这篇文章主要介绍B树的特性以及插入删除操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141951839.jpeg">
+<meta property="article:published_time" content="2022-11-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-11-14T11:52:20.093Z">
+<meta property="article:author" content="Ding YG">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141951839.jpeg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://redamancyyou.cn/2022/11/14/B%E6%A0%91/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '数据结构-B树',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-11-14 19:52:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 6.3.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://gitee.com/redamancyher/blogpic/raw/master/img/202211141951839.jpeg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">山茶花</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">数据结构-B树</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-11-13T16:00:00.000Z" title="发表于 2022-11-14 00:00:00">2022-11-14</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-11-14T11:52:20.093Z" title="更新于 2022-11-14 19:52:20">2022-11-14</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="数据结构-B树"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="B树出现的原因"><a href="#B树出现的原因" class="headerlink" title="B树出现的原因"></a>B树出现的原因</h2><p>为了解决树做我索引结构时，数据库频繁进行IO操作降低查询性能的问题。</p>
+<h2 id="B树特性"><a href="#B树特性" class="headerlink" title="B树特性"></a>B树特性</h2><ol>
+<li>一颗m阶B树，树种每个节点最多含有m棵子树</li>
+<li>若根节点不是叶子节点，则至少有两棵子树</li>
+<li>除根节点外的所有非终端节点至少有⌈m&#x2F;2⌉（向上取整）棵子树</li>
+<li>如果一个节点有n-1个关键字，则该节点有n棵子树，且n-1个关键字按照递增顺序排序</li>
+<li>每个非终端节点包含的信息：(N, A0, K1, A1, K2, …, KN…)<ul>
+<li>Ki(1≤i≤n)为关键字</li>
+<li>指针Ai指向该节点子树的根节点，Ai-1指向子树种所有节点的关键字均小于Ki，且大于Ki-1</li>
+<li>关键字个数n必须满足⌈m&#x2F;2⌉-1≤n≤m-1</li>
+</ul>
+</li>
+<li>所有叶子节点都在同一层，可以为空，表示查找失败</li>
+</ol>
+<p><img src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/B%E6%A0%91%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="5阶B树示意图"></p>
+<h2 id="B树的查找操作"><a href="#B树的查找操作" class="headerlink" title="B树的查找操作"></a>B树的查找操作</h2><p>B-树的查找很简单，是二叉排序树的扩展，二叉排序树是二路查找，B树是多路查找，因为B树结点内的关键字是有序的，在结点内进行查找时除了顺序查找外，还可以用折半查找来提升效率。B树的具体查找步骤如下（假设查找的关键字为key）</p>
+<ul>
+<li>先让key与根结点中的关键字比较，如果key等于K [i]（K []为结点内的关键字数组），则查找成功。</li>
+<li>若key&lt;K [1]，则到P [0]所指示的子树中进行继续查找（对p[]为结点内的指针数组），这里要注意B-树中每个结点的内部结构。</li>
+<li>若key&gt; K [n]的，则到P [n]所指示的子树中继续查找。</li>
+<li>若k [i] &lt;key &lt;k [i + 1]，则沿着指针p [i]所指示的子树继续查找。</li>
+<li>如果最后遇到空指针，则证明查找不成功。</li>
+</ul>
+<h2 id="B树的插入操作"><a href="#B树的插入操作" class="headerlink" title="B树的插入操作"></a>B树的插入操作</h2><p>B树的插入依赖于查找操作，先查找到关键字key待插入的位置，插入后看是否打破了B树的某种规则（比较重要的是上述规则中第三点和第五点中的第三小点），进行分裂等操作。</p>
+<p>演示五阶B树，插入顺序为：39 22 97 41 53 13 21 40 30 27 33 36 35 34 24 29 26 27 17 28 29 31 32</p>
+<p>五阶B树的关键字个数2≤n≤4</p>
+<ul>
+<li>插入 39 22 97 41 时正常插入</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/image-20221114154923652.png" alt="image-20221114154923652"></p>
+<ul>
+<li>插入53时，当前节点的关键字个数大于4个，所以以key值为41为中心进行分裂，结果如下图所示，分裂后当前结点指针指向父结点，满足B树条件，插入操作结束。当阶数m为偶数时，需要分裂时就不存在排序恰好在中间的key，那么我们选择中间位置的前一个key或中间位置的后一个key为中心进行分裂即可。</li>
+</ul>
+<p><img src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/image-20221114155344220.png" alt="image-20221114155344220"></p>
+<p>注意：之所以要将当前节点转移到父节点，是因为怕分裂后，会造成父节点的关键字个数也超过4，所以要对父节点继续进行判断</p>
+<p>最终结果为：</p>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E7%BB%93%E6%9E%9C.png" alt="结果"></p>
+<h2 id="B树的删除操作"><a href="#B树的删除操作" class="headerlink" title="B树的删除操作"></a>B树的删除操作</h2><p>删除操作是指，根据key（关键字）删除记录，如果B树中的记录中不存对应key的记录，则删除失败。</p>
+<ol>
+<li>如果当前需要删除的key位于非叶子结点上，则用后继key（这里的后继key均指后继记录的意思）覆盖要删除的key，然后在后继key所在的子支中删除该后继key。此时后继key一定位于叶子结点上，这个过程和二叉搜索树删除结点的方式类似。<strong>删除这个记录后</strong>执行第2步<ul>
+<li>后继，该key右指针所指向的子树中第一个关键字（最小的关键字）</li>
+<li>前驱，该key左指针所指向的子树中最后一个关键字（最大的关键字）</li>
+</ul>
+</li>
+<li>如果该节点的key个数“富有”，则删除结束，否则执行第3步</li>
+<li>如果该节点的key个数不”富有“，看兄弟节点，如果兄弟结点key个数富有，则父结点中的key下移到该结点，兄弟结点中的一个key上移，删除操作结束。如果兄弟也不富有，则执行第4步</li>
+<li>将父结点中的key下移与当前结点及它的兄弟结点中的key合并，形成一个新的结点。原父结点中的key的两个孩子指针就变成了一个孩子指针，指向这个新结点。然后当前结点的指针指向父结点，重复上第2步。</li>
+</ol>
+<p>有些结点它可能即有左兄弟，又有右兄弟，那么我们任意选择一个兄弟结点进行操作即可。</p>
+<p>下面以上面的5阶B树为例子演示删除操作</p>
+<ul>
+<li>删除21：21所在节点的key个数富有，所以直接删除即可</li>
+</ul>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E5%88%A0%E9%99%A421.png" alt="删除21"></p>
+<ul>
+<li>删除27：因为27所在节点不是叶子节点，所以要与叶子节点进行替换，找27的后继，也就是28这个关键字，将28与27交换后，删除原28位置的关键字</li>
+</ul>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E5%88%A0%E9%99%A427-1.png" alt="删除27-1"></p>
+<p>​		但是由于删除后，当前节点只有一个关键字29，不再”富有“，所以需要看其兄弟节点，这里他的左兄弟节点有3个关键字，富有，所以可以执行第3步，父节点28下移到当前节点，兄弟节点中的关键字26上移到父节点。（如果是左兄弟，则上移兄弟中的最后一个关键字，如果是右兄弟，则上移兄弟中的第一个关键字）</p>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E5%88%A0%E9%99%A427-2.png" alt="删除27-2"></p>
+<ul>
+<li>删除32：关键字32处于叶子节点，直接删除</li>
+</ul>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141921100.png" alt="删除32-1"></p>
+<p>​		删除后，由于当前节点的关键字个数小于2，但是其兄弟节点又不富有，所以此时要执行第4步，将关键字30，下移到当前节点，并将当前节点与其兄弟节点合并，并将当前节点指向其父节点，重复步骤2（目的是检查父节点的关键字个数下移后是否小于2）</p>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141926863.png" alt="删除32-2"></p>
+<p>当前节点（原父节点）满足条件，所以删除结束</p>
+<ul>
+<li>删除40：关键字40位于叶子节点，直接删除</li>
+</ul>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141927405.png" alt="删除40-1"></p>
+<p>​		删除后，当前节点关键字个数小于2，且其兄弟节点不富有，所以父节点关键字下移到当前节点并于兄弟节点合并（这里我选择与右兄弟合并）</p>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141931409.png" alt="删除40-2"></p>
+<p>​		当前节点指向父节点后，当前节点的关键字个数不满足要求，所以要继续调整。当前节点的兄弟节点不富有，所以讲当前节点的关键字下移到当前节点，并与兄弟节点合并</p>
+<p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141935557.png" alt="删除40-3"></p>
+<p>​		当前节点关键字个数满足要求，故删除结束，此时B树的高度降低了1</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="https://redamancyyou.cn">Ding YG</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://redamancyyou.cn/2022/11/14/B%E6%A0%91/">https://redamancyyou.cn/2022/11/14/B%E6%A0%91/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://redamancyyou.cn" target="_blank">山茶花</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">数据结构</a></div><div class="post_share"><div class="social-share" data-image="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141951839.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2022/11/13/%E7%BA%A2%E9%BB%91%E6%A0%91/"><img class="next-cover" src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/%E7%BA%A2%E9%BB%91%E6%A0%91.jpeg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">数据结构-红黑树</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/11/13/%E7%BA%A2%E9%BB%91%E6%A0%91/" title="数据结构-红黑树"><img class="cover" src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/%E7%BA%A2%E9%BB%91%E6%A0%91.jpeg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-11-13</div><div class="title">数据结构-红黑树</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/avatar.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Ding YG</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%91%E5%87%BA%E7%8E%B0%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">1.</span> <span class="toc-text">B树出现的原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%91%E7%89%B9%E6%80%A7"><span class="toc-number">2.</span> <span class="toc-text">B树特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%91%E7%9A%84%E6%9F%A5%E6%89%BE%E6%93%8D%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">B树的查找操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%91%E7%9A%84%E6%8F%92%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="toc-number">4.</span> <span class="toc-text">B树的插入操作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#B%E6%A0%91%E7%9A%84%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C"><span class="toc-number">5.</span> <span class="toc-text">B树的删除操作</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/11/14/B%E6%A0%91/" title="数据结构-B树"><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141951839.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据结构-B树"/></a><div class="content"><a class="title" href="/2022/11/14/B%E6%A0%91/" title="数据结构-B树">数据结构-B树</a><time datetime="2022-11-13T16:00:00.000Z" title="发表于 2022-11-14 00:00:00">2022-11-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/13/%E7%BA%A2%E9%BB%91%E6%A0%91/" title="数据结构-红黑树"><img src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/%E7%BA%A2%E9%BB%91%E6%A0%91.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据结构-红黑树"/></a><div class="content"><a class="title" href="/2022/11/13/%E7%BA%A2%E9%BB%91%E6%A0%91/" title="数据结构-红黑树">数据结构-红黑树</a><time datetime="2022-11-12T16:00:00.000Z" title="发表于 2022-11-13 00:00:00">2022-11-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/10/27/MySQL/" title="MySQL"><img src="/img/curry.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL"/></a><div class="content"><a class="title" href="/2022/10/27/MySQL/" title="MySQL">MySQL</a><time datetime="2022-10-26T16:00:00.000Z" title="发表于 2022-10-27 00:00:00">2022-10-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/29/JUC2/" title="JUC2"><img src="/img/curry.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JUC2"/></a><div class="content"><a class="title" href="/2022/09/29/JUC2/" title="JUC2">JUC2</a><time datetime="2022-09-28T16:00:00.000Z" title="发表于 2022-09-29 00:00:00">2022-09-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/22/JUC/" title="JUC"><img src="/img/curry.jpeg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="JUC"/></a><div class="content"><a class="title" href="/2022/09/22/JUC/" title="JUC">JUC</a><time datetime="2022-09-21T16:00:00.000Z" title="发表于 2022-09-22 00:00:00">2022-09-22</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://gitee.com/redamancyher/blogpic/raw/master/img/202211141951839.jpeg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Ding YG</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

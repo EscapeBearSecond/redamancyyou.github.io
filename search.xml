@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>数据结构-B树</title>
+      <link href="/2022/11/14/B%E6%A0%91/"/>
+      <url>/2022/11/14/B%E6%A0%91/</url>
+      
+        <content type="html"><![CDATA[<h2 id="B树出现的原因"><a href="#B树出现的原因" class="headerlink" title="B树出现的原因"></a>B树出现的原因</h2><p>为了解决树做我索引结构时，数据库频繁进行IO操作降低查询性能的问题。</p><h2 id="B树特性"><a href="#B树特性" class="headerlink" title="B树特性"></a>B树特性</h2><ol><li>一颗m阶B树，树种每个节点最多含有m棵子树</li><li>若根节点不是叶子节点，则至少有两棵子树</li><li>除根节点外的所有非终端节点至少有⌈m&#x2F;2⌉（向上取整）棵子树</li><li>如果一个节点有n-1个关键字，则该节点有n棵子树，且n-1个关键字按照递增顺序排序</li><li>每个非终端节点包含的信息：(N, A0, K1, A1, K2, …, KN…)<ul><li>Ki(1≤i≤n)为关键字</li><li>指针Ai指向该节点子树的根节点，Ai-1指向子树种所有节点的关键字均小于Ki，且大于Ki-1</li><li>关键字个数n必须满足⌈m&#x2F;2⌉-1≤n≤m-1</li></ul></li><li>所有叶子节点都在同一层，可以为空，表示查找失败</li></ol><p><img src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/B%E6%A0%91%E7%A4%BA%E6%84%8F%E5%9B%BE.png" alt="5阶B树示意图"></p><h2 id="B树的查找操作"><a href="#B树的查找操作" class="headerlink" title="B树的查找操作"></a>B树的查找操作</h2><p>B-树的查找很简单，是二叉排序树的扩展，二叉排序树是二路查找，B树是多路查找，因为B树结点内的关键字是有序的，在结点内进行查找时除了顺序查找外，还可以用折半查找来提升效率。B树的具体查找步骤如下（假设查找的关键字为key）</p><ul><li>先让key与根结点中的关键字比较，如果key等于K [i]（K []为结点内的关键字数组），则查找成功。</li><li>若key&lt;K [1]，则到P [0]所指示的子树中进行继续查找（对p[]为结点内的指针数组），这里要注意B-树中每个结点的内部结构。</li><li>若key&gt; K [n]的，则到P [n]所指示的子树中继续查找。</li><li>若k [i] &lt;key &lt;k [i + 1]，则沿着指针p [i]所指示的子树继续查找。</li><li>如果最后遇到空指针，则证明查找不成功。</li></ul><h2 id="B树的插入操作"><a href="#B树的插入操作" class="headerlink" title="B树的插入操作"></a>B树的插入操作</h2><p>B树的插入依赖于查找操作，先查找到关键字key待插入的位置，插入后看是否打破了B树的某种规则（比较重要的是上述规则中第三点和第五点中的第三小点），进行分裂等操作。</p><p>演示五阶B树，插入顺序为：39 22 97 41 53 13 21 40 30 27 33 36 35 34 24 29 26 27 17 28 29 31 32</p><p>五阶B树的关键字个数2≤n≤4</p><ul><li>插入 39 22 97 41 时正常插入</li></ul><p><img src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/image-20221114154923652.png" alt="image-20221114154923652"></p><ul><li>插入53时，当前节点的关键字个数大于4个，所以以key值为41为中心进行分裂，结果如下图所示，分裂后当前结点指针指向父结点，满足B树条件，插入操作结束。当阶数m为偶数时，需要分裂时就不存在排序恰好在中间的key，那么我们选择中间位置的前一个key或中间位置的后一个key为中心进行分裂即可。</li></ul><p><img src="https://raw.githubusercontent.com/RedamancyYou/BlogPic/main/image-20221114155344220.png" alt="image-20221114155344220"></p><p>注意：之所以要将当前节点转移到父节点，是因为怕分裂后，会造成父节点的关键字个数也超过4，所以要对父节点继续进行判断</p><p>最终结果为：</p><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E7%BB%93%E6%9E%9C.png" alt="结果"></p><h2 id="B树的删除操作"><a href="#B树的删除操作" class="headerlink" title="B树的删除操作"></a>B树的删除操作</h2><p>删除操作是指，根据key（关键字）删除记录，如果B树中的记录中不存对应key的记录，则删除失败。</p><ol><li>如果当前需要删除的key位于非叶子结点上，则用后继key（这里的后继key均指后继记录的意思）覆盖要删除的key，然后在后继key所在的子支中删除该后继key。此时后继key一定位于叶子结点上，这个过程和二叉搜索树删除结点的方式类似。<strong>删除这个记录后</strong>执行第2步<ul><li>后继，该key右指针所指向的子树中第一个关键字（最小的关键字）</li><li>前驱，该key左指针所指向的子树中最后一个关键字（最大的关键字）</li></ul></li><li>如果该节点的key个数“富有”，则删除结束，否则执行第3步</li><li>如果该节点的key个数不”富有“，看兄弟节点，如果兄弟结点key个数富有，则父结点中的key下移到该结点，兄弟结点中的一个key上移，删除操作结束。如果兄弟也不富有，则执行第4步</li><li>将父结点中的key下移与当前结点及它的兄弟结点中的key合并，形成一个新的结点。原父结点中的key的两个孩子指针就变成了一个孩子指针，指向这个新结点。然后当前结点的指针指向父结点，重复上第2步。</li></ol><p>有些结点它可能即有左兄弟，又有右兄弟，那么我们任意选择一个兄弟结点进行操作即可。</p><p>下面以上面的5阶B树为例子演示删除操作</p><ul><li>删除21：21所在节点的key个数富有，所以直接删除即可</li></ul><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E5%88%A0%E9%99%A421.png" alt="删除21"></p><ul><li>删除27：因为27所在节点不是叶子节点，所以要与叶子节点进行替换，找27的后继，也就是28这个关键字，将28与27交换后，删除原28位置的关键字</li></ul><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E5%88%A0%E9%99%A427-1.png" alt="删除27-1"></p><p>​但是由于删除后，当前节点只有一个关键字29，不再”富有“，所以需要看其兄弟节点，这里他的左兄弟节点有3个关键字，富有，所以可以执行第3步，父节点28下移到当前节点，兄弟节点中的关键字26上移到父节点。（如果是左兄弟，则上移兄弟中的最后一个关键字，如果是右兄弟，则上移兄弟中的第一个关键字）</p><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/%E5%88%A0%E9%99%A427-2.png" alt="删除27-2"></p><ul><li>删除32：关键字32处于叶子节点，直接删除</li></ul><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141921100.png" alt="删除32-1"></p><p>​删除后，由于当前节点的关键字个数小于2，但是其兄弟节点又不富有，所以此时要执行第4步，将关键字30，下移到当前节点，并将当前节点与其兄弟节点合并，并将当前节点指向其父节点，重复步骤2（目的是检查父节点的关键字个数下移后是否小于2）</p><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141926863.png" alt="删除32-2"></p><p>当前节点（原父节点）满足条件，所以删除结束</p><ul><li>删除40：关键字40位于叶子节点，直接删除</li></ul><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141927405.png" alt="删除40-1"></p><p>​删除后，当前节点关键字个数小于2，且其兄弟节点不富有，所以父节点关键字下移到当前节点并于兄弟节点合并（这里我选择与右兄弟合并）</p><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141931409.png" alt="删除40-2"></p><p>​当前节点指向父节点后，当前节点的关键字个数不满足要求，所以要继续调整。当前节点的兄弟节点不富有，所以讲当前节点的关键字下移到当前节点，并与兄弟节点合并</p><p><img src="https://gitee.com/redamancyher/blogpic/raw/master/img/202211141935557.png" alt="删除40-3"></p><p>​当前节点关键字个数满足要求，故删除结束，此时B树的高度降低了1</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 数据结构 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 数据结构 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>数据结构-红黑树</title>
       <link href="/2022/11/13/%E7%BA%A2%E9%BB%91%E6%A0%91/"/>
       <url>/2022/11/13/%E7%BA%A2%E9%BB%91%E6%A0%91/</url>
